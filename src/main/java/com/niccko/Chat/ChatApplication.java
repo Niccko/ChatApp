@@ -13,5 +13,9 @@ public class ChatApplication {
 		SpringApplication.run(ChatApplication.class, args);
 	}
 
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder(){
+		return new BCryptPasswordEncoder();
+	}
 
 }
