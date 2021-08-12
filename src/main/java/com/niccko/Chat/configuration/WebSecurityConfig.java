@@ -1,5 +1,6 @@
 package com.niccko.Chat.configuration;
 
+import com.niccko.Chat.security.JWTUtils;
 import com.niccko.Chat.security.filters.CustomAuthenticationFilter;
 import com.niccko.Chat.security.filters.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration @RequiredArgsConstructor
+@Configuration
+@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JWTUtils jwtUtils;
+
 
     private static final String ADMIN_ENDPOINT = "/login";
     private static final String LOGIN_ENDPOINT = "/login";
@@ -50,8 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/users/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
-                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), jwtUtils))
+                .addFilterBefore(new CustomAuthorizationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
