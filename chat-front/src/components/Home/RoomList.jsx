@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {authFetch} from "../../authentication/AuthProvider";
 
 class RoomList extends Component {
     constructor(props) {
@@ -12,9 +13,9 @@ class RoomList extends Component {
         const log_endpoint = 'http://localhost:8075/room/list';
         const requestOptions = {
             method: 'GET',
-            headers: {'Authorization': "Bearer " + localStorage.getItem('jwt')},
+            headers: {}
         };
-        fetch(log_endpoint, requestOptions)
+        authFetch(log_endpoint, requestOptions)
             .then(async response => {
                 const isJson = response.headers.get('content-type')?.includes('application/json');
                 const data = isJson && await response.json();

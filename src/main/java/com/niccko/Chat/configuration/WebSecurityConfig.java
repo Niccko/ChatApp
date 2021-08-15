@@ -52,6 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/room/**").hasRole("USER")
                 .antMatchers(ADMIN_ENDPOINT).hasRole("ADMIN")
                 .antMatchers("/users/register").permitAll()
+                .antMatchers("/refresh").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), jwtUtils))

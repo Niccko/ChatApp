@@ -1,36 +1,31 @@
 package com.niccko.Chat.controller;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.niccko.Chat.dto.AuthenticationDto;
 import com.niccko.Chat.dto.RegisterDto;
-import com.niccko.Chat.model.User;
 
+import com.niccko.Chat.model.User;
+import com.niccko.Chat.security.JWTUtils;
 import com.niccko.Chat.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
-@RequestMapping(value = "/api/v1/auth/")
+@RequestMapping(value = "")
+@RequiredArgsConstructor
 public class AuthenticationController {
-    private final AuthenticationManager authenticationManager;
     private final UserService userService;
-
-    @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager,UserService userService) {
-        this.authenticationManager = authenticationManager;
-        this.userService = userService;
-    }
-
-
+    private final JWTUtils jwtUtils;
 
     @PostMapping("/register")
     public User register(@RequestBody RegisterDto request) throws javax.naming.AuthenticationException {
@@ -44,5 +39,19 @@ public class AuthenticationController {
         } else {
             throw new javax.naming.AuthenticationException("User with login '" + request.getLogin() + "' already exists");
         }
+    }
+
+    @PostMapping("/refresh")
+    public @ResponseBody Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = request.getHeader("x-refresh-token");
+        DecodedJWT decodedRefresh = jwtUtils.verifyRefresh(refreshToken);
+        String login = decodedRefresh.getSubject();
+        User user = userService.findByLogin(login);
+        String accessToken = jwtUtils.generateToken(user, request.getRequestURL().toString(), false);
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+        response.setContentType(APPLICATION_JSON_VALUE);
+        return tokens;
     }
 }

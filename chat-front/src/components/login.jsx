@@ -1,67 +1,74 @@
-import React, {Component} from 'react'
+import React, {useState} from 'react'
+import {login, useAuth} from "../authentication/AuthProvider";
+import {Redirect} from "react-router-dom";
 
-class Login extends Component {
-    constructor(props) {
-        super(props);
-        this.submitHandler = this.submitHandler.bind(this);
-        this.state = {
-            login: "",
-            password: ""
+function Login() {
+    const [creds, setCreds] = useState({login: "", password: ""});
+    console.log(creds)
+    const encodeCredentials = () => {
+        let body = []
+        let credDict = {
+            login: creds.login,
+            password: creds.password
         }
-
+        for (let prop in credDict) {
+            let key = encodeURIComponent(prop);
+            let value = encodeURIComponent(creds[prop])
+            body.push(key + "=" + value);
+        }
+        return body.join('&');
     }
 
-    submitHandler(e) {
+    const submitHandler = (e) => {
         e.preventDefault();
-        const log_endpoint = 'http://localhost:8075/api/v1/auth/login';
+
+        const log_endpoint = 'http://localhost:8075/login';
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(this.state),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+            body: encodeCredentials().toString()
         };
         fetch(log_endpoint, requestOptions)
             .then(async response => {
                 const isJson = response.headers.get('content-type')?.includes('application/json');
                 const data = isJson && await response.json();
-
                 if (!response.ok) {
                     const error = (data && data.message) || response.status;
-
                     return Promise.reject(error);
                 } else {
-                    this.props.authHandler(data.user)
-                    localStorage.setItem('jwt', data.token);
+                    login(data)
                 }
 
             })
             .catch(error => {
-                this.setState({errorMessage: error.toString()});
                 console.error('There was an error!', error);
             });
 
     }
 
-    render() {
-        return (
-            <form onSubmit={this.submitHandler}>
+    return (
+        <div>
+            {useAuth() && <Redirect to={'/'}/>}
+            <form onSubmit={submitHandler}>
                 <div className="form-inner">
                     <h2>Log in</h2>
                     <a href="/signup">Sign up</a>
                     <div className="form-group">
                         <label htmlFor="login">Login</label>
                         <input type="text" name="login" id="login"
-                               onChange={e => this.setState({login: e.target.value})}/>
+                               onChange={e => setCreds({...creds, login: e.target.value})}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
                         <input type="text" name="password" id="password"
-                               onChange={e => this.setState({password: e.target.value})}/>
+                               onChange={e => setCreds({...creds, password: e.target.value})}/>
                     </div>
                     <input type="submit" value="Login"/>
                 </div>
             </form>
-        )
-    }
+        </div>
+    )
+
 }
 
 export default Login;
