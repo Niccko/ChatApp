@@ -1,10 +1,9 @@
 import React, {useState} from 'react'
 import {login, useAuth} from "../authentication/AuthProvider";
-import {Redirect} from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 
 function Login() {
     const [creds, setCreds] = useState({login: "", password: ""});
-    console.log(creds)
     const encodeCredentials = () => {
         let body = []
         let credDict = {
@@ -48,7 +47,7 @@ function Login() {
 
     return (
         <div>
-            {useAuth() && <Redirect to={'/'}/>}
+
             <form onSubmit={submitHandler}>
                 <div className="form-inner">
                     <h2>Log in</h2>
@@ -71,4 +70,4 @@ function Login() {
 
 }
 
-export default Login;
+export default withRouter(Login);

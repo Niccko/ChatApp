@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
-import {authFetch} from "../../authentication/AuthProvider";
+import {authFetch} from "../../../authentication/AuthProvider";
+import styles from "../home.module.css"
+import Room from "./Room";
 
 class RoomList extends Component {
     constructor(props) {
@@ -37,12 +39,11 @@ class RoomList extends Component {
     render() {
         const rooms = this.state.rooms;
         return (
-            <div className={'roomlist-container'}>
-                <ul>
-                    {rooms.map((room, i) => <li key={room.id}>{room.name}</li>)}
+            <div className={styles.roomlistContainer}>
+                <ul className={styles.roomList}>
+                    {rooms.map((room, i) => <Room key={i} room={room}/>)}
                 </ul>
-            </div>
-        )
+            </div>)
     }
 }
 

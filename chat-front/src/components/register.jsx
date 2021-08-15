@@ -13,7 +13,7 @@ class Register extends Component {
     render() {
         const submitHandler = e => {
             e.preventDefault();
-            const log_endpoint = 'http://localhost:8075/api/v1/auth/register';
+            const log_endpoint = 'http://localhost:8075/register';
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
