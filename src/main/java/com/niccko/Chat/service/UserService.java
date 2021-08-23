@@ -52,10 +52,6 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public User findByLogin(String login) {
-        return userRepository.findByLogin(login);
-    }
-
     public List<User> findAll() {
         return userRepository.findAll();
     }

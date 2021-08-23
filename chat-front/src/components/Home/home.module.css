@@ -2,7 +2,7 @@
     padding: 30px;
     position: relative;
     background-color: white;
-
+    height: 90%;
     z-index: 2;
     width: 1000px;
     vertical-align: top;
@@ -30,10 +30,9 @@
     padding-top: 1%;
     padding-left: 10px;
     padding-bottom: 1%;
-    width: 98%;
+    width: 85%;
     border-radius: 10px;
     background: #EEEEEE;
-    cursor: pointer;
 }
 
 .roomList .room:hover{
@@ -46,6 +45,70 @@
 }
 
 .room .userCount{
-    float: right;
+    float: left;
     padding-right: 2%;
+    font-size: 28px;
+    padding-top: 2%;
+}
+
+.createRoomButton{
+    float:right;
+}
+
+button{
+    cursor: pointer;
+}
+
+.room .roomContainer{
+    width: 100%;
+
+}
+
+.deleteButton{
+    float: right;
+    margin-top: 3%;
+    font-size: 35px;
+    background-color: #F0F0F0;
+    border-radius: 10px;
+}
+
+.deleteButton:hover{
+    background-color: #BBBBBB;
+}
+
+.createRoom{
+    padding-top: 5%;
+}
+
+.close {
+    position: absolute;
+    right: 32px;
+    top: 16px;
+    width: 32px;
+    height: 32px;
+    opacity: 0.3;
+}
+.close:hover {
+    opacity: 1;
+}
+.close:before, .close:after {
+    position: absolute;
+    left: 15px;
+    content: ' ';
+    height: 33px;
+    width: 2px;
+    background-color: #333;
+}
+.close:before {
+    transform: rotate(45deg);
+}
+.close:after {
+    transform: rotate(-45deg);
+}
+
+.noRoomText{
+    font-size: 28px;
+    padding-top: 30%;
+    padding-left: 35%;
+    color: rgba(150,150,150,150);
 }

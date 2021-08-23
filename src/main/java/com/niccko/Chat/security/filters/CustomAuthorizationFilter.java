@@ -30,7 +30,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION);
-        if(authorizationHeader!=null && authorizationHeader.startsWith("Bearer ")){
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
             DecodedJWT decodedJWT = jwtUtils.verify(token);
             String username = decodedJWT.getSubject();
@@ -39,7 +39,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             stream(roles).forEach(role -> {
                 authorities.add(new SimpleGrantedAuthority(role));
             });
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null,authorities);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);

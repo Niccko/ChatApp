@@ -27,7 +27,7 @@ public class AdminController {
 
     @PostMapping("/grant/{login}")
     public User grantAuthority(@PathVariable String login, @RequestBody String roleName){
-        User user = userService.findByLogin(login);
+        User user = userRepository.findByLogin(login);
         List<Role> roles = user.getRoles();
         roles.add(roleRepository.findByName(roleName));
         user.setRoles(roles);

@@ -10,14 +10,11 @@ import {useAuth} from "../authentication/AuthProvider";
 
 function App() {
     const [logged] = useAuth();
-    console.log(logged)
     return (
         <div className="App">
             <Router>
                 <Switch>
-                    {logged && <>
-                        <Route path='/' component={Home}/>
-                    </>}
+                        <Route exact path='/' component={Home}/>
                     {!logged && <>
                         <Route path='/login' render={() => <Login/>}/>
                         <Route path='/signup' component={Register}/>

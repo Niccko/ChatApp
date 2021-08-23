@@ -128,3 +128,16 @@ form .form-inner a:hover{
   background: #BBB;
 }
 
+.form-group input[type="checkbox"]{
+  justify-content: center;
+  height: 25px;
+  width: 10px;
+  background-color: #AAA;
+}
+
+.errorMessage{
+  font-size: 20px;
+  font-weight: 500;
+  color: red;
+}
+

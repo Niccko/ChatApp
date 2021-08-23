@@ -1,6 +1,9 @@
 package com.niccko.Chat.model;
 
 import lombok.Data;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -19,10 +22,14 @@ public class User {
     private boolean enabled;
     private Date updated;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_roles",
     joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "id")},
     inverseJoinColumns = {@JoinColumn(name="role_id",referencedColumnName = "id")})
     private List<Role> roles;
+
+
+
 
 }

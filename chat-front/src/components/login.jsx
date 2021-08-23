@@ -1,9 +1,22 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {login, useAuth} from "../authentication/AuthProvider";
 import {Redirect, withRouter} from "react-router-dom";
 
 function Login() {
     const [creds, setCreds] = useState({login: "", password: ""});
+    const [error, setError] = useState(null)
+    const [logged] = useAuth()
+
+    useEffect(() => {
+        return null
+    })
+
+    if (logged) {
+        return (
+            <Redirect to={"/"}/>
+        )
+    }
+
     const encodeCredentials = () => {
         let body = []
         let credDict = {
@@ -33,6 +46,11 @@ function Login() {
                 const data = isJson && await response.json();
                 if (!response.ok) {
                     const error = (data && data.message) || response.status;
+                    if (response.status === 403) {
+                        setError("Incorrect login or password!")
+                    } else {
+                        setError("Internal server error! Try again later.")
+                    }
                     return Promise.reject(error);
                 } else {
                     login(data)
@@ -47,11 +65,11 @@ function Login() {
 
     return (
         <div>
-
             <form onSubmit={submitHandler}>
                 <div className="form-inner">
                     <h2>Log in</h2>
                     <a href="/signup">Sign up</a>
+                    {error && <h4 className={"errorMessage"}>{error}</h4>}
                     <div className="form-group">
                         <label htmlFor="login">Login</label>
                         <input type="text" name="login" id="login"

@@ -3,25 +3,24 @@ package com.niccko.Chat.service;
 import com.niccko.Chat.model.ChatRoom;
 import com.niccko.Chat.model.User;
 import com.niccko.Chat.repository.RoomRepository;
+import com.niccko.Chat.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 
 @Service
+@RequiredArgsConstructor
 public class RoomService {
     private final RoomRepository roomRepository;
-    private final UserService userService;
-
-    @Autowired
-    public RoomService(RoomRepository roomRepository, UserService userService) {
-        this.roomRepository = roomRepository;
-        this.userService = userService;
-    }
+    private final UserRepository userRepository;
 
     private String generateId() {
         return RandomString.make(6).toUpperCase(Locale.ROOT);
@@ -31,7 +30,7 @@ public class RoomService {
         return roomRepository.findChatRoomById(roomId);
     }
 
-    public ChatRoom createRoom(String name, int maxCapacity, boolean visible) {
+    public ChatRoom createRoom(String name, int maxCapacity, boolean visible, User owner) {
         ChatRoom room = new ChatRoom();
         String id = generateId();
         while (getById(id) != null) {
@@ -42,19 +41,19 @@ public class RoomService {
         room.setName(name);
         room.setVisible(visible);
         room.setUsers(new ArrayList<>());
+        room.setOwner(owner);
         roomRepository.save(room);
         return room;
     }
 
-    public User addUser(String roomId, String userLogin) {
+    public User addUser(String roomId, long userId) {
         ChatRoom room = getById(roomId);
         var users = room.getUsers();
         if (users.size() < room.getMaxCapacity()) {
-            User user = userService.findByLogin(userLogin);
+            User user = userRepository.findById(userId);
             if (!users.contains(user)) {
                 users.add(user);
-                room.setUsers(users);
-                System.out.println(userLogin);
+                room.setUsers(users);;
                 roomRepository.save(room);
                 return user;
             }
@@ -62,10 +61,25 @@ public class RoomService {
         return null;
     }
 
-    public User deleteUser(String roomId, String userLogin) {
+    public User addUser(String roomId, String login) {
         ChatRoom room = getById(roomId);
         var users = room.getUsers();
-        User user = userService.findByLogin(userLogin);
+        if (users.size() < room.getMaxCapacity()) {
+            User user = userRepository.findByLogin(login);
+            if (!users.contains(user)) {
+                users.add(user);
+                room.setUsers(users);;
+                roomRepository.save(room);
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public User deleteUser(String roomId, long userId) {
+        ChatRoom room = getById(roomId);
+        var users = room.getUsers();
+        User user = userRepository.findById(userId);
         if (users.contains(user)) {
             users.remove(user);
             room.setUsers(users);
@@ -75,10 +89,14 @@ public class RoomService {
         return null;
     }
 
-    public List<ChatRoom> findAll(boolean isAdmin) {
-        if(isAdmin){
+    public List<ChatRoom> findAllVisible(String login, boolean isAdmin) {
+        if (isAdmin)
             return roomRepository.findAll();
-        }
-        return roomRepository.findAllByVisible(true);
+        User user = userRepository.findByLogin(login);
+        return roomRepository.findAllByUsersContainingOrVisible(user, true);
+    }
+
+    public void deleteRoom(String id) {
+        roomRepository.deleteById(id);
     }
 }

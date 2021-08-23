@@ -26,7 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     private final JWTUtils jwtUtils;
 
 
-    private static final String ADMIN_ENDPOINT = "/login";
+    private static final String ADMIN_ENDPOINT = "/admin";
     private static final String LOGIN_ENDPOINT = "/login";
 
 
