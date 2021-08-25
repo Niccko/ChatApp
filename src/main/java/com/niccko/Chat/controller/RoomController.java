@@ -3,6 +3,7 @@ package com.niccko.Chat.controller;
 import com.niccko.Chat.dto.CreateRoomDto;
 import com.niccko.Chat.dto.UserDto;
 import com.niccko.Chat.model.ChatRoom;
+import com.niccko.Chat.model.Message;
 import com.niccko.Chat.model.User;
 import com.niccko.Chat.repository.UserRepository;
 import com.niccko.Chat.service.RoomService;
@@ -58,5 +59,10 @@ public class RoomController {
     public boolean isOwner(@RequestParam String roomId, @RequestParam long userId) {
         ChatRoom room = roomService.getById(roomId);
         return room.getOwner().getId() == userId;
+    }
+
+    @GetMapping("/history")
+    public List<Message> getHistory(@RequestParam int count, @RequestParam String roomId){
+        return roomService.getHistory(roomId, count);
     }
 }

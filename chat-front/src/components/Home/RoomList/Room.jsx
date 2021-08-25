@@ -37,7 +37,7 @@ function Room(props) {
      }
     return (
         <div className={styles.roomContainer}>
-            <button className={styles.room}>
+            <button onClick={()=>props.setRoom(info)} className={styles.room}>
                 <li key={props.room.id}>
                     <div className={styles.roomName}>{info.name}</div>
                     <div className={styles.userCount}>&nbsp;&nbsp; {info.id} &nbsp;{info.users.length}/{info.maxCapacity}</div>

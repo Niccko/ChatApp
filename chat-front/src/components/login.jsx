@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {login, useAuth} from "../authentication/AuthProvider";
 import {Redirect, withRouter} from "react-router-dom";
+import {x_encode} from "../utils";
 
 function Login() {
     const [creds, setCreds] = useState({login: "", password: ""});
@@ -17,19 +18,6 @@ function Login() {
         )
     }
 
-    const encodeCredentials = () => {
-        let body = []
-        let credDict = {
-            login: creds.login,
-            password: creds.password
-        }
-        for (let prop in credDict) {
-            let key = encodeURIComponent(prop);
-            let value = encodeURIComponent(creds[prop])
-            body.push(key + "=" + value);
-        }
-        return body.join('&');
-    }
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -38,7 +26,7 @@ function Login() {
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
-            body: encodeCredentials().toString()
+            body: x_encode(creds)
         };
         fetch(log_endpoint, requestOptions)
             .then(async response => {
@@ -65,7 +53,7 @@ function Login() {
 
     return (
         <div>
-            <form onSubmit={submitHandler}>
+            <form className={"auth-form"} onSubmit={submitHandler}>
                 <div className="form-inner">
                     <h2>Log in</h2>
                     <a href="/signup">Sign up</a>

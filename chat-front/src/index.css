@@ -17,10 +17,11 @@ code {
 
 * {
   font-family: 'Montserrat', sans-serif;
-  font-size: 48px;
+  font-size: 35px;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
 }
 
 input, button {
@@ -58,7 +59,7 @@ form .form-inner h2{
   display: inline-block;
 }
 
-form:after{
+.auth-form form :after{
   content: "";
   display: block;
   position: absolute;
@@ -70,7 +71,9 @@ form:after{
   z-index: 1;
 }
 
-
+.auth-form{
+  border: 4px double black
+}
 
 form .form-inner .form-group{
   display: block;

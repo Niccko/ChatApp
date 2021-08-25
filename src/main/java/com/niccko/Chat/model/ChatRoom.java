@@ -5,8 +5,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -20,8 +19,10 @@ public class ChatRoom {
     @JoinTable(name = "room_users",
             joinColumns = {@JoinColumn(name = "room_id",referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name="user_id",referencedColumnName = "id")})
-    private List<User> users;
-    @ManyToOne()
+    private Set<User> users;
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Message> messages;
+    @ManyToOne
     @JoinColumn(name = "ownerId")
     private User owner;
     private int maxCapacity;

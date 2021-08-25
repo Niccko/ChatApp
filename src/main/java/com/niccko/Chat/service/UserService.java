@@ -5,7 +5,6 @@ import com.niccko.Chat.model.User;
 import com.niccko.Chat.repository.RoleRepository;
 import com.niccko.Chat.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,10 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -43,7 +39,7 @@ public class UserService implements UserDetailsService {
 
     public User register(User user) {
         Role role = roleRepository.findByName("ROLE_USER");
-        List<Role> roles = new ArrayList<>();
+        Set<Role> roles = new HashSet<>();
         roles.add(role);
         user.setEnabled(true);
         user.setPassword(encoder.encode(user.getPassword()));

@@ -21,6 +21,8 @@
     list-style: none;
     margin: 10px auto;
     padding-bottom: 10px;
+
+    height: 757px;
 }
 
 .roomList .room{
@@ -33,18 +35,24 @@
     width: 85%;
     border-radius: 10px;
     background: #EEEEEE;
+    display: table;
 }
 
 .roomList .room:hover{
     background: #E5E5E5;
 }
 
+.room li{
+    height: 100%;
+}
+
 .roomList .room .roomName{
-    vertical-align: center;
+    display: table-cell;
     float: left;
 }
 
 .room .userCount{
+    display: table-cell;
     float: left;
     padding-right: 2%;
     font-size: 28px;
@@ -111,4 +119,8 @@ button{
     padding-top: 30%;
     padding-left: 35%;
     color: rgba(150,150,150,150);
+}
+
+.chatRoomContainer{
+
 }

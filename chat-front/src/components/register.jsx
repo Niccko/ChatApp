@@ -48,7 +48,7 @@ function Register() {
     }
     return (
 
-        <form onSubmit={submitHandler}>
+        <form className={"auth-form"} onSubmit={submitHandler}>
             {redirect && <Redirect to={"/"}/>}
             <div className="form-inner">
                 <h2>Sign up</h2>

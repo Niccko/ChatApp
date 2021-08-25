@@ -2,9 +2,10 @@ import React, {useEffect, useState} from 'react'
 import {authFetch} from "../../../authentication/AuthProvider";
 import styles from "../home.module.css"
 import Room from "./Room";
+import {isConnected, subscribe} from "../../../websockets/WebsocketProvider";
 
 
-function RoomList() {
+function RoomList(props) {
 
     const [rooms, setRooms] = useState([])
 
@@ -24,6 +25,7 @@ function RoomList() {
                     return Promise.reject(error);
                 } else {
                     setRooms(data);
+                    setTimeout(() => data.forEach((room) => subscribe("/topic/room/" + room.id)), 500);
                 }
 
             })
@@ -39,9 +41,9 @@ function RoomList() {
     return (
         <div className={styles.roomlistContainer}>
             <ul className={styles.roomList}>
-                {rooms.map((room, i) => <Room key={i} room={room} updateRooms={updateRooms}/>)}
+                {rooms.map((room, i) => <Room setRoom={props.setRoom} key={i} room={room} updateRooms={updateRooms}/>)}
             </ul>
-            {rooms.length===0 && <h4 className={styles.noRoomText}>No rooms available</h4>}
+            {rooms.length === 0 && <h4 className={styles.noRoomText}>No rooms available</h4>}
         </div>)
 
 }

@@ -7,9 +7,19 @@ import {
     Switch,
 } from "react-router-dom"
 import {useAuth} from "../authentication/AuthProvider";
+import {connect, disconnect, subscribe} from "../websockets/WebsocketProvider";
+import {useEffect} from "react";
+
 
 function App() {
     const [logged] = useAuth();
+     useEffect(()=>{
+        if(logged){
+            connect();
+        } else {
+            disconnect();
+        }
+     }, [logged])
     return (
         <div className="App">
             <Router>

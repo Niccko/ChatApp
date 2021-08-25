@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import createTokenProvider from "./TokenProvider";
+import {createWebsocketProvider} from "../websockets/WebsocketProvider";
 
 export function createAuthProvider() {
     let tokenProvider = createTokenProvider();
@@ -15,11 +16,13 @@ export function createAuthProvider() {
     function login(data) {
         tokenProvider.setToken({accessToken: data.accessToken, refreshToken: data.refreshToken});
         setUserData(data);
+
     }
 
     function logout() {
         tokenProvider.setToken(null);
         setUserData(null);
+
     }
 
     async function authFetch(requestURL, requestOptions) {

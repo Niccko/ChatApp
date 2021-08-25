@@ -1,6 +1,7 @@
 package com.niccko.Chat.service;
 
 import com.niccko.Chat.model.ChatRoom;
+import com.niccko.Chat.model.Message;
 import com.niccko.Chat.model.User;
 import com.niccko.Chat.repository.RoomRepository;
 import com.niccko.Chat.repository.UserRepository;
@@ -11,9 +12,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -40,7 +40,7 @@ public class RoomService {
         room.setMaxCapacity(maxCapacity);
         room.setName(name);
         room.setVisible(visible);
-        room.setUsers(new ArrayList<>());
+        room.setUsers(new HashSet<>());
         room.setOwner(owner);
         roomRepository.save(room);
         return room;
@@ -53,7 +53,8 @@ public class RoomService {
             User user = userRepository.findById(userId);
             if (!users.contains(user)) {
                 users.add(user);
-                room.setUsers(users);;
+                room.setUsers(users);
+                ;
                 roomRepository.save(room);
                 return user;
             }
@@ -68,7 +69,8 @@ public class RoomService {
             User user = userRepository.findByLogin(login);
             if (!users.contains(user)) {
                 users.add(user);
-                room.setUsers(users);;
+                room.setUsers(users);
+                ;
                 roomRepository.save(room);
                 return user;
             }
@@ -98,5 +100,12 @@ public class RoomService {
 
     public void deleteRoom(String id) {
         roomRepository.deleteById(id);
+    }
+
+    public List<Message> getHistory(String roomId, int count) {
+        ChatRoom room = roomRepository.findChatRoomById(roomId);
+        Set<Message> messages = room.getMessages();
+        List<Message> sorted = messages.stream().sorted(Comparator.comparing(Message::getDate)).collect(Collectors.toList());
+        return sorted.subList(sorted.size()-Math.min(sorted.size(),count), sorted.size());
     }
 }
